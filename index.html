@@ -369,8 +369,12 @@ input:checked+.slider::before{transform:translateX(18px);}
         <input class="mm-url-input" id="mmUrlIn" type="text" placeholder="https://... のURL または Base64データ">
         <button class="mm-add-btn" onclick="addImage()">追加</button>
       </div>
+      <div style="margin-top:10px;">
+        <input type="file" id="mmFileIn" accept="image/*" multiple style="display:none;" onchange="addImageFromFile(event)">
+        <button class="mm-add-btn" style="width:100%;background:linear-gradient(135deg,var(--purple),#5b3a8a);" onclick="document.getElementById('mmFileIn').click()">📷 カメラロール / ファイルから画像を選ぶ（複数選択OK）</button>
+      </div>
       <div class="mm-thumb-list" id="mmThumbs"></div>
-      <div class="mm-tip">💡 base64.guru でBase64に変換した「データURI」をそのまま貼り付けてもOKです</div>
+      <div class="mm-tip">💡 上のボタンでiPadのカメラロールから直接選べます。複数枚を一度に選択可能です</div>
     </div>
   </div>
 
@@ -636,6 +640,32 @@ function addImage(){
   D.images.push(url);
   document.getElementById('mmUrlIn').value='';
   sv();renderMovie();toast('画像を追加しました');
+}
+
+function addImageFromFile(event){
+  var files = event.target.files;
+  if(!files || !files.length) return;
+  var total = files.length;
+  var loaded = 0;
+  toast(total + '枚を読み込み中...');
+  Array.prototype.forEach.call(files, function(file){
+    var reader = new FileReader();
+    reader.onload = function(e){
+      D.images.push(e.target.result);
+      loaded++;
+      if(loaded === total){
+        sv();
+        renderMovie();
+        toast(total + '枚の画像を追加しました');
+      }
+    };
+    reader.onerror = function(){
+      loaded++;
+      toast('一部の画像の読み込みに失敗しました');
+    };
+    reader.readAsDataURL(file);
+  });
+  event.target.value = '';
 }
 
 function togglePlay(){
