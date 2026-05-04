@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
+<!-- saved from url=(0052)file:///Users/youichi/Downloads/30day-rule-v2_4.html -->
+<html lang="ja"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>30日間ルール v2</title>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=M+PLUS+1:wght@300;400;700&display=swap" rel="stylesheet">
+<link href="./30日間ルール v2_files/css2" rel="stylesheet">
 <style>
 :root {
   --gold: #d4a843;
@@ -303,34 +303,34 @@ input:checked+.slider::before{transform:translateX(18px);}
   <div class="hdr-sub">BRAIN REWIRING — MIND MOVIE EDITION</div>
   <div class="hdr-day">
     <span>今日は</span>
-    <strong id="dayNum">1</strong>
+    <strong id="dayNum">2</strong>
     <span>日目</span>
   </div>
 </div>
 
 <nav class="nav">
-  <button class="nb on" onclick="go('today')" id="nav-today"><span class="ic">🌅</span>今日</button>
-  <button class="nb" onclick="go('movie')" id="nav-movie"><span class="ic">🎬</span>映像</button>
-  <button class="nb" onclick="go('cal')" id="nav-cal"><span class="ic">📅</span>記録</button>
-  <button class="nb" onclick="go('diary')" id="nav-diary"><span class="ic">📖</span>日記</button>
-  <button class="nb" onclick="go('set')" id="nav-set"><span class="ic">⚙️</span>設定</button>
+  <button class="nb on" onclick="go(&#39;today&#39;)" id="nav-today"><span class="ic">🌅</span>今日</button>
+  <button class="nb" onclick="go(&#39;movie&#39;)" id="nav-movie"><span class="ic">🎬</span>映像</button>
+  <button class="nb" onclick="go(&#39;cal&#39;)" id="nav-cal"><span class="ic">📅</span>記録</button>
+  <button class="nb" onclick="go(&#39;diary&#39;)" id="nav-diary"><span class="ic">📖</span>日記</button>
+  <button class="nb" onclick="go(&#39;set&#39;)" id="nav-set"><span class="ic">⚙️</span>設定</button>
 </nav>
 
 <!-- ===== TODAY ===== -->
 <div class="sc on" id="sc-today">
-  <div id="gtBanner" style="display:none"></div>
-  <div style="text-align:center;font-size:11px;color:var(--dim);margin-bottom:13px;letter-spacing:.08em;" id="dateDisp"></div>
+  <div id="gtBanner" style="display: flex;" class="gt-banner"><div class="gt-icon">☀️</div><div class="gt-info"><div class="gt-title">ゴールデンタイム！</div><div class="gt-sub">☀️ 起床後のゴールデンタイム！アファーメーションを声に出そう</div></div></div>
+  <div style="text-align:center;font-size:11px;color:var(--dim);margin-bottom:13px;letter-spacing:.08em;" id="dateDisp">2026年5月5日（火）</div>
 
   <div class="aff-box">
     <div class="aff-lbl">✦ 今日のアファーメーション</div>
-    <div class="aff-txt" id="affDisp"></div>
+    <div class="aff-txt ph" id="affDisp">タップして理想の言葉を設定しましょう</div>
     <button class="eb" onclick="openAff()">✎ 編集する</button>
   </div>
 
   <div class="st">6つのステップ</div>
   <div class="prg-wrap"><div class="prg-fill" id="prgBar" style="width:0%"></div></div>
   <div class="prg-lbl" id="prgLbl">0 / 6 完了</div>
-  <div class="step-list" id="stepList"></div>
+  <div class="step-list" id="stepList"><div class="si"><div class="ck"></div><div class="se">✍️</div><div class="si-info"><div class="sn">書く</div><div class="sd">理想を「私は〇〇である」現在形で紙に書く。脳は現実と想像を区別できない</div></div></div><div class="si"><div class="ck"></div><div class="se">🌿</div><div class="si-info"><div class="sn">環境・情報を整える</div><div class="sd">愚痴の多い人と距離を置く。聴く音楽・見る動画・読む本を選ぶ</div></div></div><div class="si"><div class="ck"></div><div class="se">🎬</div><div class="si-info"><div class="sn">マインドムービーを見る</div><div class="sd">就寝前・起床後のゴールデンタイムに「最高だ！」という感情で眺める</div></div></div><div class="si"><div class="ck"></div><div class="se">🪞</div><div class="si-info"><div class="sn">ミラーワーク</div><div class="sd">鏡の自分に「あなたはパワフルだ・成功に値する」と語りかける</div></div></div><div class="si"><div class="ck"></div><div class="se">🚶</div><div class="si-info"><div class="sn">感謝しながら動く</div><div class="sd">感謝の気持ちで小さな行動を積み重ねる。言葉を行動に結びつける</div></div></div><div class="si"><div class="ck"></div><div class="se">💫</div><div class="si-info"><div class="sn">手放し・変化を受け入れる</div><div class="sd">違和感のある仕事や関係を手放す勇気を持つ。不安は新ステージの証</div></div></div></div>
 
   <div class="st">感謝の3つ ✨</div>
   <div class="grat-box">
@@ -366,11 +366,11 @@ input:checked+.slider::before{transform:translateX(18px);}
     <div class="mm-add-area">
       <div class="st">画像を追加</div>
       <div class="mm-url-row">
-        <input class="mm-url-input" id="mmUrlIn" type="url" placeholder="https://... の画像URL">
+        <input class="mm-url-input" id="mmUrlIn" type="text" placeholder="https://... のURL または Base64データ">
         <button class="mm-add-btn" onclick="addImage()">追加</button>
       </div>
       <div class="mm-thumb-list" id="mmThumbs"></div>
-      <div class="mm-tip">💡 Googleで画像検索 → 画像を長押し → 「画像のURLをコピー」で追加できます</div>
+      <div class="mm-tip">💡 base64.guru でBase64に変換した「データURI」をそのまま貼り付けてもOKです</div>
     </div>
   </div>
 
@@ -445,6 +445,20 @@ input:checked+.slider::before{transform:translateX(18px);}
     <textarea class="set-ta" id="affIn" placeholder="例：私は毎月○○万円の売上を達成し、充実した毎日を送っている"></textarea>
   </div>
   <button class="set-save" onclick="saveSets()">設定を保存する</button>
+
+  <div style="height:16px;"></div>
+  <div class="st">データのバックアップ・引き継ぎ</div>
+  <p style="font-size:10px;color:var(--dim);margin-bottom:10px;line-height:1.6;">MacとiPadなど複数デバイスで使う場合は、エクスポートしたファイルをAirDropで送ってインポートしてください。</p>
+
+  <button class="set-save" style="background:linear-gradient(135deg,#3db89a,#2a7a60);margin-bottom:8px;" onclick="exportData()">📤 データをエクスポート（書き出し）</button>
+
+  <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:8px;padding:10px 12px;margin-bottom:8px;">
+    <label class="set-lbl" style="margin-bottom:6px;">📥 データをインポート（読み込み）</label>
+    <input type="file" id="importFile" accept=".json" style="display:none;" onchange="importData(event)">
+    <button class="set-save" style="background:linear-gradient(135deg,var(--purple),#5b3a8a);" onclick="document.getElementById(&#39;importFile&#39;).click()">ファイルを選択してインポート</button>
+    <p style="font-size:10px;color:var(--dim);margin-top:6px;">※ 現在のデータは上書きされます</p>
+  </div>
+
   <button class="reset-btn" onclick="resetAll()">⚠️ すべてリセット</button>
 </div>
 
@@ -618,7 +632,7 @@ function renderMovie(){
 function addImage(){
   var url=document.getElementById('mmUrlIn').value.trim();
   if(!url){toast('URLを入力してください');return;}
-  if(!url.startsWith('http')){toast('http または https から始まるURLを入力してください');return;}
+  if(!url.startsWith('http') && !url.startsWith('data:image')){toast('URLまたはBase64データを入力してください');return;}
   D.images.push(url);
   document.getElementById('mmUrlIn').value='';
   sv();renderMovie();toast('画像を追加しました');
@@ -817,9 +831,44 @@ function toast(msg){
   setTimeout(function(){t.classList.remove('show');},2500);
 }
 
+function exportData(){
+  var json = JSON.stringify(D, null, 2);
+  var blob = new Blob([json], {type:'application/json'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = '30day-rule-backup-' + td() + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('エクスポートしました！');
+}
+
+function importData(event){
+  var file = event.target.files[0];
+  if(!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e){
+    try {
+      var imported = JSON.parse(e.target.result);
+      if(!imported.records) throw new Error('invalid');
+      if(confirm('現在のデータを上書きしてインポートしますか？')){
+        D = imported;
+        sv();
+        renderToday();
+        toast('インポート完了！データを引き継ぎました');
+      }
+    } catch(err) {
+      toast('ファイルが正しくありません');
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
 // ===== INIT =====
 renderToday();
 if(D.notif&&(D.notif.night||D.notif.morning||D.notif.evening))scheduleNotif();
 </script>
-</body>
-</html>
+
+
+</body></html>
