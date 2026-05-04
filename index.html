@@ -642,27 +642,73 @@ function addImage(){
   sv();renderMovie();toast('画像を追加しました');
 }
 
+function compressImage(dataUrl, maxW, quality){
+  return new Promise(function(resolve, reject){
+    var img = new Image();
+    img.onload = function(){
+      var w = img.width, h = img.height;
+      if(w > maxW){
+        h = Math.round(h * maxW / w);
+        w = maxW;
+      }
+      var canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      var ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      try {
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      } catch(err){
+        reject(err);
+      }
+    };
+    img.onerror = reject;
+    img.src = dataUrl;
+  });
+}
+
 function addImageFromFile(event){
   var files = event.target.files;
   if(!files || !files.length) return;
   var total = files.length;
-  var loaded = 0;
-  toast(total + '枚を読み込み中...');
+  var processed = 0;
+  var added = 0;
+  var failed = 0;
+  toast(total + '枚を圧縮中...');
+
+  function done(){
+    processed++;
+    if(processed === total){
+      renderMovie();
+      if(failed === 0){
+        toast(added + '枚の画像を追加しました');
+      } else if(added === 0){
+        toast('容量不足のため追加できませんでした。古い画像を削除してください');
+      } else {
+        toast(added + '枚追加（' + failed + '枚は容量オーバーで失敗）');
+      }
+    }
+  }
+
   Array.prototype.forEach.call(files, function(file){
     var reader = new FileReader();
     reader.onload = function(e){
-      D.images.push(e.target.result);
-      loaded++;
-      if(loaded === total){
-        sv();
-        renderMovie();
-        toast(total + '枚の画像を追加しました');
-      }
+      compressImage(e.target.result, 1080, 0.82).then(function(compressed){
+        D.images.push(compressed);
+        try {
+          sv();
+          added++;
+        } catch(err){
+          D.images.pop();
+          failed++;
+        }
+        done();
+      }).catch(function(){
+        failed++;
+        done();
+      });
     };
-    reader.onerror = function(){
-      loaded++;
-      toast('一部の画像の読み込みに失敗しました');
-    };
+    reader.onerror = function(){failed++; done();};
     reader.readAsDataURL(file);
   });
   event.target.value = '';
