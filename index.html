@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>30日間ルール v2</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=M+PLUS+1:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold: #d4a843;
+  --gold2: #f0cc70;
+  --bg: #080810;
+  --bg2: #0f0f1c;
+  --bg3: #161626;
+  --bg4: #1e1e32;
+  --text: #ede8d8;
+  --dim: #7a7468;
+  --purple: #8b6ab5;
+  --teal: #3db89a;
+  --red: #e05a5a;
+  --border: rgba(212,168,67,0.18);
+  --border2: rgba(255,255,255,0.06);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'M PLUS 1',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+
+/* ── HEADER ── */
+.hdr{
+  background:linear-gradient(160deg,#12082a 0%,#080818 60%,#0a1020 100%);
+  padding:20px 16px 14px;
+  text-align:center;
+  border-bottom:1px solid var(--border);
+  position:relative;
+  overflow:hidden;
+}
+.hdr::after{
+  content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);
+  width:260px;height:260px;
+  background:radial-gradient(circle,rgba(139,106,181,0.25) 0%,transparent 65%);
+  pointer-events:none;
+}
+.hdr-title{font-family:'Noto Serif JP',serif;font-size:17px;color:var(--gold);letter-spacing:.18em;position:relative;z-index:1;}
+.hdr-sub{font-size:10px;color:var(--dim);letter-spacing:.22em;margin-top:3px;}
+.hdr-day{
+  display:inline-flex;align-items:center;gap:5px;margin-top:11px;
+  background:rgba(212,168,67,0.08);border:1px solid var(--border);
+  border-radius:20px;padding:5px 16px;font-size:12px;color:var(--gold2);
+  position:relative;z-index:1;
+}
+.hdr-day strong{font-size:20px;font-family:'Noto Serif JP',serif;}
+
+/* ── NAV ── */
+.nav{display:flex;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+.nb{
+  flex:1;padding:10px 2px 8px;background:none;border:none;color:var(--dim);
+  font-size:9px;font-family:'M PLUS 1',sans-serif;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  border-bottom:2px solid transparent;transition:all .2s;
+}
+.nb .ic{font-size:17px;}
+.nb.on{color:var(--gold);border-bottom-color:var(--gold);}
+
+/* ── SCREENS ── */
+.sc{display:none;padding:14px 14px 30px;}
+.sc.on{display:block;}
+
+/* ── SECTION TITLE ── */
+.st{
+  font-size:10px;color:var(--gold);letter-spacing:.22em;
+  margin-bottom:10px;display:flex;align-items:center;gap:7px;
+}
+.st::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* ── AFFIRMATION ── */
+.aff-box{
+  background:linear-gradient(135deg,#150930,#0a1428);
+  border:1px solid rgba(139,106,181,.4);border-radius:12px;
+  padding:14px;margin-bottom:14px;position:relative;overflow:hidden;
+}
+.aff-box::before{content:'✦';position:absolute;top:9px;right:11px;color:var(--purple);font-size:11px;opacity:.5;}
+.aff-lbl{font-size:9px;color:var(--purple);letter-spacing:.22em;margin-bottom:7px;}
+.aff-txt{font-family:'Noto Serif JP',serif;font-size:14px;line-height:1.8;color:var(--text);white-space:pre-wrap;word-break:break-all;min-height:24px;}
+.aff-txt.ph{color:var(--dim);font-size:12px;}
+.eb{margin-top:9px;background:none;border:1px solid rgba(139,106,181,.35);border-radius:6px;color:var(--purple);font-size:10px;padding:4px 12px;cursor:pointer;font-family:'M PLUS 1',sans-serif;}
+
+/* ── PROGRESS ── */
+.prg-wrap{background:var(--bg3);border-radius:5px;height:7px;margin-bottom:5px;overflow:hidden;}
+.prg-fill{height:100%;background:linear-gradient(90deg,var(--purple),var(--gold));border-radius:5px;transition:width .4s ease;}
+.prg-lbl{font-size:10px;color:var(--dim);text-align:right;margin-bottom:13px;}
+
+/* ── STEPS ── */
+.step-list{display:flex;flex-direction:column;gap:7px;margin-bottom:14px;}
+.si{
+  background:var(--bg2);border:1px solid var(--border2);border-radius:10px;
+  padding:11px 13px;display:flex;align-items:center;gap:11px;
+  cursor:pointer;transition:all .2s;user-select:none;
+}
+.si.done{border-color:rgba(61,184,154,.35);background:rgba(61,184,154,.05);}
+.ck{
+  width:22px;height:22px;border-radius:50%;border:2px solid var(--dim);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;flex-shrink:0;transition:all .2s;color:#fff;
+}
+.si.done .ck{background:var(--teal);border-color:var(--teal);}
+.se{font-size:17px;flex-shrink:0;}
+.si-info{flex:1;}
+.sn{font-size:12px;font-weight:700;}
+.sd{font-size:10px;color:var(--dim);margin-top:2px;line-height:1.4;}
+
+/* ── GRATITUDE ── */
+.grat-box{background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:12px;margin-bottom:12px;}
+.gi{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;}
+.gi:last-child{margin-bottom:0;}
+.gi-num{width:20px;height:20px;border-radius:50%;background:rgba(212,168,67,.12);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--gold);flex-shrink:0;margin-top:2px;}
+.gi input{flex:1;background:none;border:none;border-bottom:1px solid var(--border2);color:var(--text);font-family:'M PLUS 1',sans-serif;font-size:12px;padding:2px 0 4px;outline:none;}
+.gi input::placeholder{color:var(--dim);}
+.gi input:focus{border-bottom-color:var(--gold);}
+
+/* ── MEMO ── */
+.memo-box{background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:12px;margin-bottom:12px;}
+.memo-box textarea{width:100%;background:none;border:none;color:var(--text);font-family:'M PLUS 1',sans-serif;font-size:12px;line-height:1.7;resize:none;outline:none;min-height:70px;}
+.memo-box textarea::placeholder{color:var(--dim);}
+
+/* ── SAVE BTN ── */
+.sbtn{
+  width:100%;padding:13px;background:linear-gradient(135deg,var(--purple),#5b3a8a);
+  border:none;border-radius:10px;color:#fff;font-family:'M PLUS 1',sans-serif;
+  font-size:13px;font-weight:700;cursor:pointer;letter-spacing:.1em;transition:opacity .2s;
+}
+.sbtn:active{opacity:.8;}
+.sbtn.done{background:linear-gradient(135deg,var(--teal),#2a7a60);}
+
+/* ── MIND MOVIE ── */
+.mm-wrap{
+  background:var(--bg2);border:1px solid var(--border);border-radius:12px;
+  overflow:hidden;margin-bottom:14px;
+}
+.mm-stage{
+  width:100%;aspect-ratio:16/9;background:#000;position:relative;
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+}
+.mm-img{
+  width:100%;height:100%;object-fit:cover;
+  position:absolute;top:0;left:0;
+  opacity:0;transition:opacity 1s ease;
+}
+.mm-img.show{opacity:1;}
+.mm-placeholder{color:var(--dim);font-size:12px;text-align:center;padding:20px;}
+.mm-ctrl{padding:10px 12px;display:flex;align-items:center;gap:8px;}
+.mm-dot-wrap{display:flex;gap:5px;flex:1;}
+.mm-dot{width:6px;height:6px;border-radius:50%;background:var(--bg4);}
+.mm-dot.on{background:var(--gold);}
+.mm-playbtn{
+  background:rgba(212,168,67,.12);border:1px solid var(--border);border-radius:6px;
+  color:var(--gold);font-size:11px;padding:5px 12px;cursor:pointer;
+  font-family:'M PLUS 1',sans-serif;
+}
+
+.mm-add-area{padding:12px;border-top:1px solid var(--border2);}
+.mm-url-row{display:flex;gap:6px;margin-bottom:6px;}
+.mm-url-input{
+  flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:7px;
+  padding:7px 10px;color:var(--text);font-family:'M PLUS 1',sans-serif;font-size:11px;outline:none;
+}
+.mm-url-input:focus{border-color:var(--gold);}
+.mm-add-btn{
+  background:var(--gold);border:none;border-radius:7px;color:#080810;
+  font-size:11px;font-weight:700;padding:7px 13px;cursor:pointer;font-family:'M PLUS 1',sans-serif;
+  white-space:nowrap;
+}
+.mm-thumb-list{display:flex;gap:6px;flex-wrap:wrap;}
+.mm-thumb{
+  width:52px;height:36px;border-radius:5px;object-fit:cover;
+  border:2px solid transparent;cursor:pointer;position:relative;
+}
+.mm-thumb-wrap{position:relative;display:inline-block;}
+.mm-del{
+  position:absolute;top:-4px;right:-4px;width:14px;height:14px;
+  background:var(--red);border:none;border-radius:50%;color:#fff;
+  font-size:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  line-height:1;
+}
+.mm-tip{font-size:10px;color:var(--dim);line-height:1.5;margin-top:6px;}
+
+/* ── NOTIFICATION ── */
+.notif-box{background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:12px;margin-bottom:12px;}
+.notif-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border2);}
+.notif-row:last-child{border-bottom:none;padding-bottom:0;}
+.notif-label{font-size:12px;}
+.notif-sub{font-size:10px;color:var(--dim);margin-top:2px;}
+.toggle{position:relative;width:42px;height:24px;flex-shrink:0;}
+.toggle input{opacity:0;width:0;height:0;}
+.slider{
+  position:absolute;inset:0;background:var(--bg4);border-radius:12px;
+  cursor:pointer;transition:.3s;border:1px solid var(--border2);
+}
+.slider::before{
+  content:'';position:absolute;width:18px;height:18px;left:2px;top:2px;
+  background:#fff;border-radius:50%;transition:.3s;
+}
+input:checked+.slider{background:var(--teal);}
+input:checked+.slider::before{transform:translateX(18px);}
+.time-input{
+  background:var(--bg3);border:1px solid var(--border2);border-radius:6px;
+  padding:3px 8px;color:var(--text);font-family:'M PLUS 1',sans-serif;font-size:12px;
+  outline:none;width:90px;text-align:center;
+}
+.notif-save{
+  width:100%;padding:10px;background:linear-gradient(135deg,var(--teal),#2a7a60);
+  border:none;border-radius:8px;color:#fff;font-family:'M PLUS 1',sans-serif;
+  font-size:12px;font-weight:700;cursor:pointer;margin-top:8px;
+}
+.notif-note{font-size:10px;color:var(--dim);line-height:1.5;margin-top:8px;}
+
+/* ── CALENDAR ── */
+.cal-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:5px;margin-bottom:16px;}
+.cd{
+  aspect-ratio:1;border-radius:7px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;font-size:10px;font-weight:700;
+  background:var(--bg2);border:1px solid var(--border2);
+}
+.cd.today{border-color:var(--gold);color:var(--gold);}
+.cd.full{background:rgba(61,184,154,.14);border-color:var(--teal);color:var(--teal);}
+.cd.part{background:rgba(212,168,67,.08);border-color:rgba(212,168,67,.3);color:var(--gold2);}
+.cd.fut{opacity:.25;}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:14px;}
+.stat{background:var(--bg2);border:1px solid var(--border2);border-radius:9px;padding:11px 7px;text-align:center;}
+.stat-n{font-size:22px;font-weight:700;font-family:'Noto Serif JP',serif;color:var(--gold);}
+.stat-l{font-size:9px;color:var(--dim);margin-top:2px;}
+
+/* ── DIARY ── */
+.de{background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:11px 13px;margin-bottom:9px;}
+.de-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.de-date{font-size:11px;color:var(--gold);}
+.de-steps{font-size:10px;}
+.de-memo{font-size:12px;line-height:1.6;word-break:break-all;margin-bottom:4px;}
+.de-grat{font-size:11px;color:var(--dim);line-height:1.5;}
+.de-empty{text-align:center;color:var(--dim);padding:28px;font-size:12px;}
+
+/* ── SETTINGS ── */
+.set-sec{margin-bottom:18px;}
+.set-lbl{font-size:10px;color:var(--dim);letter-spacing:.15em;margin-bottom:7px;display:block;}
+.set-in{
+  width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;
+  padding:9px 11px;color:var(--text);font-family:'M PLUS 1',sans-serif;font-size:12px;outline:none;
+}
+.set-in:focus{border-color:var(--gold);}
+.set-ta{
+  width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;
+  padding:9px 11px;color:var(--text);font-family:'Noto Serif JP',serif;font-size:13px;
+  outline:none;resize:none;min-height:90px;line-height:1.7;
+}
+.set-ta:focus{border-color:var(--gold);}
+.set-save{
+  width:100%;padding:11px;background:linear-gradient(135deg,var(--gold),#a07828);
+  border:none;border-radius:8px;color:#080810;font-family:'M PLUS 1',sans-serif;
+  font-size:12px;font-weight:700;cursor:pointer;letter-spacing:.1em;
+}
+.reset-btn{
+  width:100%;padding:9px;background:none;border:1px solid rgba(224,90,90,.3);
+  border-radius:8px;color:rgba(224,90,90,.7);font-family:'M PLUS 1',sans-serif;
+  font-size:11px;cursor:pointer;margin-top:7px;
+}
+
+/* ── MODAL ── */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:200;align-items:flex-end;justify-content:center;}
+.overlay.open{display:flex;}
+.modal{background:var(--bg2);border:1px solid var(--border);border-radius:16px 16px 0 0;padding:18px;width:100%;max-height:72vh;overflow-y:auto;}
+.modal-ttl{font-family:'Noto Serif JP',serif;font-size:14px;color:var(--gold);margin-bottom:10px;}
+.modal-ta{
+  width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;
+  padding:10px 11px;color:var(--text);font-family:'Noto Serif JP',serif;font-size:14px;
+  line-height:1.8;resize:none;outline:none;min-height:110px;
+}
+.modal-row{display:flex;gap:8px;margin-top:11px;}
+.mc{flex:1;padding:9px;background:none;border:1px solid var(--border2);border-radius:8px;color:var(--dim);font-family:'M PLUS 1',sans-serif;cursor:pointer;}
+.ms{flex:2;padding:9px;background:var(--purple);border:none;border-radius:8px;color:#fff;font-family:'M PLUS 1',sans-serif;font-weight:700;cursor:pointer;}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:76px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--teal);color:#fff;padding:7px 18px;border-radius:18px;
+  font-size:12px;opacity:0;transition:all .3s;pointer-events:none;z-index:300;white-space:nowrap;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ── GOLDEN TIME BANNER ── */
+.gt-banner{
+  background:linear-gradient(135deg,rgba(212,168,67,.12),rgba(139,106,181,.1));
+  border:1px solid var(--border);border-radius:10px;padding:11px 13px;
+  margin-bottom:13px;display:flex;align-items:center;gap:10px;
+}
+.gt-icon{font-size:22px;}
+.gt-info{flex:1;}
+.gt-title{font-size:12px;font-weight:700;color:var(--gold2);}
+.gt-sub{font-size:10px;color:var(--dim);margin-top:2px;line-height:1.4;}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-title">願いが叶う 30日間ルール</div>
+  <div class="hdr-sub">BRAIN REWIRING — MIND MOVIE EDITION</div>
+  <div class="hdr-day">
+    <span>今日は</span>
+    <strong id="dayNum">1</strong>
+    <span>日目</span>
+  </div>
+</div>
+
+<nav class="nav">
+  <button class="nb on" onclick="go('today')" id="nav-today"><span class="ic">🌅</span>今日</button>
+  <button class="nb" onclick="go('movie')" id="nav-movie"><span class="ic">🎬</span>映像</button>
+  <button class="nb" onclick="go('cal')" id="nav-cal"><span class="ic">📅</span>記録</button>
+  <button class="nb" onclick="go('diary')" id="nav-diary"><span class="ic">📖</span>日記</button>
+  <button class="nb" onclick="go('set')" id="nav-set"><span class="ic">⚙️</span>設定</button>
+</nav>
+
+<!-- ===== TODAY ===== -->
+<div class="sc on" id="sc-today">
+  <div id="gtBanner" style="display:none"></div>
+  <div style="text-align:center;font-size:11px;color:var(--dim);margin-bottom:13px;letter-spacing:.08em;" id="dateDisp"></div>
+
+  <div class="aff-box">
+    <div class="aff-lbl">✦ 今日のアファーメーション</div>
+    <div class="aff-txt" id="affDisp"></div>
+    <button class="eb" onclick="openAff()">✎ 編集する</button>
+  </div>
+
+  <div class="st">6つのステップ</div>
+  <div class="prg-wrap"><div class="prg-fill" id="prgBar" style="width:0%"></div></div>
+  <div class="prg-lbl" id="prgLbl">0 / 6 完了</div>
+  <div class="step-list" id="stepList"></div>
+
+  <div class="st">感謝の3つ ✨</div>
+  <div class="grat-box">
+    <div class="gi"><div class="gi-num">1</div><input id="g1" type="text" placeholder="今日感謝できること…"></div>
+    <div class="gi"><div class="gi-num">2</div><input id="g2" type="text" placeholder="当たり前だけど有難いこと…"></div>
+    <div class="gi"><div class="gi-num">3</div><input id="g3" type="text" placeholder="誰か・何かへの感謝…"></div>
+  </div>
+
+  <div class="st">今日の一言メモ</div>
+  <div class="memo-box"><textarea id="memoArea" placeholder="気づき・変化・感情など…" rows="3"></textarea></div>
+
+  <button class="sbtn" id="saveBtn" onclick="saveToday()">✓ 今日の記録を保存する</button>
+</div>
+
+<!-- ===== MIND MOVIE ===== -->
+<div class="sc" id="sc-movie">
+  <div class="gt-banner">
+    <div class="gt-icon">⏰</div>
+    <div class="gt-info">
+      <div class="gt-title">ゴールデンタイムに見よう</div>
+      <div class="gt-sub">就寝前・起床後すぐに「最高だ！」という感情で眺めるのが最強</div>
+    </div>
+  </div>
+
+  <div class="mm-wrap">
+    <div class="mm-stage" id="mmStage">
+      <div class="mm-placeholder" id="mmPlaceholder">↓ 理想の画像URLを追加してください</div>
+    </div>
+    <div class="mm-ctrl">
+      <div class="mm-dot-wrap" id="mmDots"></div>
+      <button class="mm-playbtn" id="mmPlayBtn" onclick="togglePlay()">▶ 再生</button>
+    </div>
+    <div class="mm-add-area">
+      <div class="st">画像を追加</div>
+      <div class="mm-url-row">
+        <input class="mm-url-input" id="mmUrlIn" type="url" placeholder="https://... の画像URL">
+        <button class="mm-add-btn" onclick="addImage()">追加</button>
+      </div>
+      <div class="mm-thumb-list" id="mmThumbs"></div>
+      <div class="mm-tip">💡 Googleで画像検索 → 画像を長押し → 「画像のURLをコピー」で追加できます</div>
+    </div>
+  </div>
+
+  <div class="st">通知設定（リマインダー）</div>
+  <div class="notif-box">
+    <div class="notif-row">
+      <div>
+        <div class="notif-label">🌙 就寝前の通知</div>
+        <div class="notif-sub">ゴールデンタイム — マインドムービーを見よう</div>
+      </div>
+      <label class="toggle"><input type="checkbox" id="nightToggle"><span class="slider"></span></label>
+    </div>
+    <div class="notif-row" id="nightTimeRow" style="display:none;">
+      <div class="notif-label">時間</div>
+      <input class="time-input" type="time" id="nightTime" value="22:00">
+    </div>
+    <div class="notif-row">
+      <div>
+        <div class="notif-label">☀️ 起床後の通知</div>
+        <div class="notif-sub">ゴールデンタイム — アファーメーションの時間</div>
+      </div>
+      <label class="toggle"><input type="checkbox" id="morningToggle"><span class="slider"></span></label>
+    </div>
+    <div class="notif-row" id="morningTimeRow" style="display:none;">
+      <div class="notif-label">時間</div>
+      <input class="time-input" type="time" id="morningTime" value="06:30">
+    </div>
+    <div class="notif-row">
+      <div>
+        <div class="notif-label">📋 夜の記録リマインダー</div>
+        <div class="notif-sub">6ステップのチェックを忘れずに</div>
+      </div>
+      <label class="toggle"><input type="checkbox" id="eveningToggle"><span class="slider"></span></label>
+    </div>
+    <div class="notif-row" id="eveningTimeRow" style="display:none;">
+      <div class="notif-label">時間</div>
+      <input class="time-input" type="time" id="eveningTime" value="21:00">
+    </div>
+    <button class="notif-save" onclick="saveNotif()">通知を設定する</button>
+    <div class="notif-note" id="notifNote">※ ブラウザの通知許可が必要です。設定後はこのページをブックマークし、毎日開くと通知されます。</div>
+  </div>
+</div>
+
+<!-- ===== CALENDAR ===== -->
+<div class="sc" id="sc-cal">
+  <div class="stats-row" id="statsRow"></div>
+  <div class="st">30日間の進捗</div>
+  <div class="cal-grid" id="calGrid"></div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;font-size:10px;color:var(--dim);">
+    <span style="color:var(--teal)">🟩 全完了</span>
+    <span style="color:var(--gold2)">🟨 一部完了</span>
+    <span>⬛ 未記録</span>
+    <span style="color:var(--gold)">◇ 今日</span>
+  </div>
+</div>
+
+<!-- ===== DIARY ===== -->
+<div class="sc" id="sc-diary">
+  <div class="st">過去の記録</div>
+  <div id="diaryList"></div>
+</div>
+
+<!-- ===== SETTINGS ===== -->
+<div class="sc" id="sc-set">
+  <div class="set-sec">
+    <label class="set-lbl">◆ チャレンジ開始日</label>
+    <input type="date" class="set-in" id="startIn">
+  </div>
+  <div class="set-sec">
+    <label class="set-lbl">◆ アファーメーション（現在形で書く）</label>
+    <p style="font-size:10px;color:var(--dim);margin-bottom:7px;line-height:1.5;">「私は〇〇である」という形で、読むたびにワクワクする言葉を</p>
+    <textarea class="set-ta" id="affIn" placeholder="例：私は毎月○○万円の売上を達成し、充実した毎日を送っている"></textarea>
+  </div>
+  <button class="set-save" onclick="saveSets()">設定を保存する</button>
+  <button class="reset-btn" onclick="resetAll()">⚠️ すべてリセット</button>
+</div>
+
+<!-- Aff Modal -->
+<div class="overlay" id="affModal">
+  <div class="modal">
+    <div class="modal-ttl">✦ アファーメーションを編集</div>
+    <p style="font-size:10px;color:var(--dim);margin-bottom:9px;line-height:1.5;">現在形・肯定形で。読むたびにニヤニヤできる言葉を書きましょう。</p>
+    <textarea class="modal-ta" id="affModalIn" placeholder="例：私は年収○○万円を達成し、毎日楽しく仕事をしている"></textarea>
+    <div class="modal-row">
+      <button class="mc" onclick="closeAff()">キャンセル</button>
+      <button class="ms" onclick="saveAff()">保存する</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== STEPS（2動画統合版）=====
+var STEPS = [
+  {e:'✍️', n:'書く', d:'理想を「私は〇〇である」現在形で紙に書く。脳は現実と想像を区別できない'},
+  {e:'🌿', n:'環境・情報を整える', d:'愚痴の多い人と距離を置く。聴く音楽・見る動画・読む本を選ぶ'},
+  {e:'🎬', n:'マインドムービーを見る', d:'就寝前・起床後のゴールデンタイムに「最高だ！」という感情で眺める'},
+  {e:'🪞', n:'ミラーワーク', d:'鏡の自分に「あなたはパワフルだ・成功に値する」と語りかける'},
+  {e:'🚶', n:'感謝しながら動く', d:'感謝の気持ちで小さな行動を積み重ねる。言葉を行動に結びつける'},
+  {e:'💫', n:'手放し・変化を受け入れる', d:'違和感のある仕事や関係を手放す勇気を持つ。不安は新ステージの証'},
+];
+
+// ===== DATA =====
+var D = JSON.parse(localStorage.getItem('30dv2')||'{}');
+if(!D.records)D.records={};
+if(!D.aff)D.aff='';
+if(!D.start)D.start=td();
+if(!D.images)D.images=[];
+if(!D.notif)D.notif={night:false,morning:false,evening:false,nightTime:'22:00',morningTime:'06:30',eveningTime:'21:00'};
+
+function sv(){localStorage.setItem('30dv2',JSON.stringify(D));}
+
+function td(){
+  var d=new Date();
+  return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+}
+function pad(n){return String(n).padStart(2,'0');}
+
+function dayNum(){
+  var s=new Date(D.start+'T00:00:00'), t=new Date(td()+'T00:00:00');
+  return Math.max(1,Math.min(Math.floor((t-s)/86400000)+1,30));
+}
+
+function rec(){
+  var t=td();
+  if(!D.records[t])D.records[t]={steps:[0,0,0,0,0,0],memo:'',saved:false,grat:['','','']};
+  if(!D.records[t].grat)D.records[t].grat=['','',''];
+  return D.records[t];
+}
+
+// ===== GOLDEN TIME BANNER =====
+function checkGT(){
+  var h=new Date().getHours();
+  var banner=document.getElementById('gtBanner');
+  // 就寝前(21-24)か起床後(5-8)
+  if((h>=21)||(h>=5&&h<=8)){
+    var msg=h>=21?'🌙 就寝前のゴールデンタイム！マインドムービーを見て眠ろう':'☀️ 起床後のゴールデンタイム！アファーメーションを声に出そう';
+    banner.style.display='flex';
+    banner.className='gt-banner';
+    banner.innerHTML='<div class="gt-icon">'+(h>=21?'🌙':'☀️')+'</div><div class="gt-info"><div class="gt-title">ゴールデンタイム！</div><div class="gt-sub">'+msg+'</div></div>';
+  } else {
+    banner.style.display='none';
+  }
+}
+
+// ===== RENDER TODAY =====
+function renderToday(){
+  var now=new Date();
+  var dnames=['日','月','火','水','木','金','土'];
+  document.getElementById('dateDisp').textContent=
+    now.getFullYear()+'年'+(now.getMonth()+1)+'月'+now.getDate()+'日（'+dnames[now.getDay()]+'）';
+  document.getElementById('dayNum').textContent=dayNum();
+  checkGT();
+
+  var ad=document.getElementById('affDisp');
+  if(D.aff){ad.textContent=D.aff;ad.className='aff-txt';}
+  else{ad.textContent='タップして理想の言葉を設定しましょう';ad.className='aff-txt ph';}
+
+  var r=rec();
+  var list=document.getElementById('stepList');
+  list.innerHTML='';
+  STEPS.forEach(function(s,i){
+    var div=document.createElement('div');
+    div.className='si'+(r.steps[i]?' done':'');
+    div.innerHTML='<div class="ck">'+(r.steps[i]?'✓':'')+'</div>'+
+      '<div class="se">'+s.e+'</div>'+
+      '<div class="si-info"><div class="sn">'+s.n+'</div><div class="sd">'+s.d+'</div></div>';
+    div.onclick=function(){r.steps[i]=r.steps[i]?0:1;sv();renderToday();};
+    list.appendChild(div);
+  });
+
+  var done=r.steps.reduce(function(a,b){return a+b;},0);
+  document.getElementById('prgBar').style.width=Math.round(done/6*100)+'%';
+  document.getElementById('prgLbl').textContent=done+' / 6 完了';
+
+  document.getElementById('g1').value=r.grat[0]||'';
+  document.getElementById('g2').value=r.grat[1]||'';
+  document.getElementById('g3').value=r.grat[2]||'';
+  document.getElementById('memoArea').value=r.memo||'';
+
+  var btn=document.getElementById('saveBtn');
+  if(r.saved){btn.textContent='✓ 保存済み';btn.className='sbtn done';}
+  else{btn.textContent='✓ 今日の記録を保存する';btn.className='sbtn';}
+}
+
+function saveToday(){
+  var r=rec();
+  r.grat=[
+    document.getElementById('g1').value,
+    document.getElementById('g2').value,
+    document.getElementById('g3').value
+  ];
+  r.memo=document.getElementById('memoArea').value;
+  r.saved=true;
+  sv();renderToday();toast('記録を保存しました！');
+}
+
+// ===== MIND MOVIE =====
+var mmTimer=null, mmIdx=0, mmPlaying=false;
+
+function renderMovie(){
+  var stage=document.getElementById('mmStage');
+  var ph=document.getElementById('mmPlaceholder');
+  var dots=document.getElementById('mmDots');
+  var thumbs=document.getElementById('mmThumbs');
+
+  // clear old imgs
+  stage.querySelectorAll('img').forEach(function(el){el.remove();});
+  dots.innerHTML='';
+  thumbs.innerHTML='';
+
+  if(!D.images.length){
+    ph.style.display='flex';
+    document.getElementById('mmPlayBtn').style.display='none';
+    return;
+  }
+  ph.style.display='none';
+  document.getElementById('mmPlayBtn').style.display='block';
+
+  D.images.forEach(function(url,i){
+    var img=document.createElement('img');
+    img.src=url;img.className='mm-img'+(i===mmIdx?' show':'');
+    img.onerror=function(){this.src='';this.style.display='none';};
+    stage.appendChild(img);
+
+    var dot=document.createElement('div');
+    dot.className='mm-dot'+(i===mmIdx?' on':'');
+    dots.appendChild(dot);
+
+    var wrap=document.createElement('div');
+    wrap.className='mm-thumb-wrap';
+    var th=document.createElement('img');
+    th.src=url;th.className='mm-thumb';
+    th.onclick=(function(idx){return function(){mmIdx=idx;renderMovie();};})(i);
+    th.onerror=function(){this.style.display='none';};
+    var del=document.createElement('button');
+    del.className='mm-del';del.textContent='×';
+    del.onclick=(function(idx){return function(e){e.stopPropagation();D.images.splice(idx,1);if(mmIdx>=D.images.length)mmIdx=0;sv();renderMovie();};})(i);
+    wrap.appendChild(th);wrap.appendChild(del);
+    thumbs.appendChild(wrap);
+  });
+}
+
+function addImage(){
+  var url=document.getElementById('mmUrlIn').value.trim();
+  if(!url){toast('URLを入力してください');return;}
+  if(!url.startsWith('http')){toast('http または https から始まるURLを入力してください');return;}
+  D.images.push(url);
+  document.getElementById('mmUrlIn').value='';
+  sv();renderMovie();toast('画像を追加しました');
+}
+
+function togglePlay(){
+  if(mmPlaying){
+    clearInterval(mmTimer);mmPlaying=false;
+    document.getElementById('mmPlayBtn').textContent='▶ 再生';
+  } else {
+    if(!D.images.length)return;
+    mmPlaying=true;
+    document.getElementById('mmPlayBtn').textContent='⏸ 停止';
+    mmTimer=setInterval(function(){
+      mmIdx=(mmIdx+1)%D.images.length;
+      renderMovie();
+    },3500);
+  }
+}
+
+// ===== NOTIFICATIONS =====
+function renderNotif(){
+  var n=D.notif;
+  document.getElementById('nightToggle').checked=n.night;
+  document.getElementById('morningToggle').checked=n.morning;
+  document.getElementById('eveningToggle').checked=n.evening;
+  document.getElementById('nightTime').value=n.nightTime||'22:00';
+  document.getElementById('morningTime').value=n.morningTime||'06:30';
+  document.getElementById('eveningTime').value=n.eveningTime||'21:00';
+  document.getElementById('nightTimeRow').style.display=n.night?'flex':'none';
+  document.getElementById('morningTimeRow').style.display=n.morning?'flex':'none';
+  document.getElementById('eveningTimeRow').style.display=n.evening?'flex':'none';
+}
+
+document.getElementById('nightToggle').onchange=function(){
+  document.getElementById('nightTimeRow').style.display=this.checked?'flex':'none';
+};
+document.getElementById('morningToggle').onchange=function(){
+  document.getElementById('morningTimeRow').style.display=this.checked?'flex':'none';
+};
+document.getElementById('eveningToggle').onchange=function(){
+  document.getElementById('eveningTimeRow').style.display=this.checked?'flex':'none';
+};
+
+function saveNotif(){
+  if(!('Notification' in window)){
+    document.getElementById('notifNote').textContent='⚠️ このブラウザは通知に対応していません。';
+    return;
+  }
+  Notification.requestPermission().then(function(perm){
+    if(perm==='granted'){
+      D.notif={
+        night:document.getElementById('nightToggle').checked,
+        morning:document.getElementById('morningToggle').checked,
+        evening:document.getElementById('eveningToggle').checked,
+        nightTime:document.getElementById('nightTime').value,
+        morningTime:document.getElementById('morningTime').value,
+        eveningTime:document.getElementById('eveningTime').value
+      };
+      sv();
+      scheduleNotif();
+      toast('通知を設定しました！');
+      document.getElementById('notifNote').textContent='✓ 通知が設定されました。このページを開いた状態でご利用ください。';
+    } else {
+      document.getElementById('notifNote').textContent='⚠️ 通知の許可が必要です。ブラウザの設定から許可してください。';
+    }
+  });
+}
+
+var notifChecked=null;
+function scheduleNotif(){
+  if(notifChecked)clearInterval(notifChecked);
+  notifChecked=setInterval(function(){
+    if(Notification.permission!=='granted')return;
+    var now=new Date();
+    var hm=pad(now.getHours())+':'+pad(now.getMinutes());
+    var n=D.notif;
+    if(n.night&&hm===n.nightTime){
+      new Notification('🌙 30日間ルール',{body:'就寝前のゴールデンタイム！マインドムービーを見ましょう',icon:''});
+    }
+    if(n.morning&&hm===n.morningTime){
+      new Notification('☀️ 30日間ルール',{body:'起床後のゴールデンタイム！アファーメーションの時間です',icon:''});
+    }
+    if(n.evening&&hm===n.eveningTime){
+      new Notification('📋 30日間ルール',{body:'今日の6ステップを記録しましたか？',icon:''});
+    }
+  },60000);
+}
+
+// ===== CALENDAR =====
+function renderCal(){
+  var start=new Date(D.start+'T00:00:00'), today=td();
+  var full=0;
+  for(var i=0;i<30;i++){
+    var d=new Date(start);d.setDate(d.getDate()+i);
+    var ds=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+    var r=D.records[ds];
+    if(r&&r.steps.reduce(function(a,b){return a+b;},0)===6)full++;
+  }
+  var dn=dayNum();
+  document.getElementById('statsRow').innerHTML=
+    '<div class="stat"><div class="stat-n">'+dn+'</div><div class="stat-l">経過日数</div></div>'+
+    '<div class="stat"><div class="stat-n">'+full+'</div><div class="stat-l">完璧な日</div></div>'+
+    '<div class="stat"><div class="stat-n">'+Math.max(0,30-dn)+'</div><div class="stat-l">残り日数</div></div>';
+
+  var grid=document.getElementById('calGrid');grid.innerHTML='';
+  for(var i=0;i<30;i++){
+    var d=new Date(start);d.setDate(d.getDate()+i);
+    var ds=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+    var r=D.records[ds];
+    var done=r?r.steps.reduce(function(a,b){return a+b;},0):0;
+    var div=document.createElement('div');
+    var cls='cd';
+    if(ds===today)cls+=' today';
+    else if(ds>today)cls+=' fut';
+    else if(done===6)cls+=' full';
+    else if(done>0)cls+=' part';
+    div.className=cls;
+    var inner='<span>'+(i+1)+'</span>';
+    if(done>0&&done<6&&ds<=today)inner+='<span style="font-size:8px;">'+done+'/6</span>';
+    div.innerHTML=inner;
+    grid.appendChild(div);
+  }
+}
+
+// ===== DIARY =====
+function renderDiary(){
+  var list=document.getElementById('diaryList');
+  var dnames=['日','月','火','水','木','金','土'];
+  var entries=Object.entries(D.records)
+    .filter(function(e){var r=e[1];return r.memo||(r.grat&&r.grat.some(function(g){return g;}))||(r.steps&&r.steps.some(function(s){return s;}));})
+    .sort(function(a,b){return b[0].localeCompare(a[0]);})
+    .slice(0,30);
+
+  if(!entries.length){list.innerHTML='<div class="de-empty">まだ記録がありません</div>';return;}
+  list.innerHTML='';
+  entries.forEach(function(e){
+    var ds=e[0],r=e[1];
+    var d=new Date(ds+'T00:00:00');
+    var done=r.steps?r.steps.reduce(function(a,b){return a+b;},0):0;
+    var div=document.createElement('div');div.className='de';
+    var gratHtml='';
+    if(r.grat&&r.grat.some(function(g){return g;})){
+      gratHtml='<div class="de-grat">感謝: '+r.grat.filter(function(g){return g;}).map(function(g){return '✦ '+g;}).join(' / ')+'</div>';
+    }
+    div.innerHTML=
+      '<div class="de-hdr">'+
+        '<span class="de-date">'+(d.getMonth()+1)+'月'+d.getDate()+'日（'+dnames[d.getDay()]+'）</span>'+
+        '<span class="de-steps" style="color:'+(done===6?'var(--teal)':'var(--dim)')+'">'+done+'/6</span>'+
+      '</div>'+
+      (r.memo?'<div class="de-memo">'+r.memo.replace(/</g,'&lt;').replace(/>/g,'&gt;')+'</div>':'<div style="font-size:11px;color:var(--dim)">メモなし</div>')+
+      gratHtml;
+    list.appendChild(div);
+  });
+}
+
+// ===== SETTINGS =====
+function renderSet(){
+  document.getElementById('startIn').value=D.start;
+  document.getElementById('affIn').value=D.aff;
+}
+function saveSets(){
+  D.start=document.getElementById('startIn').value||td();
+  D.aff=document.getElementById('affIn').value;
+  sv();toast('設定を保存しました！');renderToday();
+}
+function resetAll(){
+  if(confirm('すべてのデータをリセットしますか？\nこの操作は元に戻せません。')){
+    localStorage.removeItem('30dv2');
+    D={records:{},aff:'',start:td(),images:[],notif:{night:false,morning:false,evening:false,nightTime:'22:00',morningTime:'06:30',eveningTime:'21:00'}};
+    sv();mmIdx=0;go('today');toast('リセットしました');
+  }
+}
+
+// ===== AFF MODAL =====
+function openAff(){document.getElementById('affModalIn').value=D.aff;document.getElementById('affModal').classList.add('open');}
+function closeAff(){document.getElementById('affModal').classList.remove('open');}
+function saveAff(){D.aff=document.getElementById('affModalIn').value;sv();closeAff();renderToday();toast('アファーメーションを保存しました');}
+
+// ===== NAV =====
+function go(name){
+  document.querySelectorAll('.sc').forEach(function(s){s.classList.remove('on');});
+  document.querySelectorAll('.nb').forEach(function(b){b.classList.remove('on');});
+  document.getElementById('sc-'+name).classList.add('on');
+  document.getElementById('nav-'+name).classList.add('on');
+  if(name==='cal')renderCal();
+  if(name==='diary')renderDiary();
+  if(name==='set')renderSet();
+  if(name==='movie'){renderMovie();renderNotif();}
+}
+
+// ===== TOAST =====
+function toast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},2500);
+}
+
+// ===== INIT =====
+renderToday();
+if(D.notif&&(D.notif.night||D.notif.morning||D.notif.evening))scheduleNotif();
+</script>
+</body>
+</html>
